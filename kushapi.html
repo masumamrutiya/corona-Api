@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COVID-19 India Data</title>
+   <style>body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+    background: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+h1 {
+    color: #333;
+}
+
+#data {
+    margin-top: 20px;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+</style>
+</head>
+<body>
+    <div class="container">
+        <h1>COVID-19 India Data</h1>
+        <div id="data"></div>
+        <button id="prev">Previous</button>
+        <button id="next">Next</button>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+    let currentIndex = 0;
+    let covidData = [];
+
+
+    document.getElementById('next').addEventListener('click', function() {
+        if (currentIndex < covidData.length - 1) {
+            currentIndex++;
+            displayData(currentIndex);
+        }
+    });
+
+    document.getElementById('prev').addEventListener('click', function() {
+        if (currentIndex > 0) {
+            currentIndex--;
+            displayData(currentIndex);
+        }
+    });
+
+    fetch('https://data.covid19india.org/data.json')
+        .then(response => response.json())
+        .then(data => {
+            covidData = data.cases_time_series;
+            displayData(currentIndex);
+        })
+        .catch(error => {
+            console.error('Error fetching data:', error);
+        });
+
+
+    function displayData(index) {
+        const dataContainer = document.getElementById('data');
+        const data = covidData[index];
+
+        dataContainer.innerHTML = `
+            <p>Date: ${data.date}</p>
+            <p>Daily Confirmed: ${data.dailyconfirmed}</p>
+            <p>Total Confirmed: ${data.totalconfirmed}</p>
+            <p>Daily Recovered: ${data.dailyrecovered}</p>
+            <p>Total Recovered: ${data.totalrecovered}</p>
+            <p>Daily Deceased: ${data.dailydeceased}</p>
+            <p>Total Deceased: ${data.totaldeceased}</p>
+        `;
+    }
+
+
+
+
+});
+
+</script>
